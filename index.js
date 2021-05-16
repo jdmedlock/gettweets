@@ -1,11 +1,24 @@
-const needle = require('needle')
-const getUserId = require('./src/getUserId')
-require('dotenv').config()
+const { Command } = require('commander')
+const program = new Command()
 
-// The code below sets the bearer token from your environment variables
-// To set environment variables on macOS or Linux, run the export command below from the terminal:
-// export BEARER_TOKEN='YOUR-TOKEN'
-const bearerToken = process.env.TWITTER_BEARER_TOKEN
+const needle = require('needle')
+const Environment = require('./src/Environment')
+const { isDebugOn } = require('./src/Environment')
+const getUserId = require('./src/getUserId')
+
+const environment = new Environment()
+environment.initDotEnv('./')
+let isDebug = false
+
+const consoleLogOptions = (options) => {
+  if (isDebug) {
+    console.log('\getTweets command options:')
+    console.log('--------------------')
+    console.log('- debug: ',options.debug)
+    console.log('- user: ', options.user)
+    console.log('- filepath: ', options.filepath)
+  }
+}
 
 const getPage = async (url, params, options, nextToken) => {
   if (nextToken) {
@@ -25,7 +38,7 @@ const getPage = async (url, params, options, nextToken) => {
   }
 }
 
-const getUserTweets = async (userId) => {
+const getUserTweets = async (bearerToken, userId) => {
   const url = `https://api.twitter.com/2/users/${ userId }/tweets`
 
   let userTweets = []
@@ -40,7 +53,7 @@ const getUserTweets = async (userId) => {
   const options = {
       headers: {
           "User-Agent": "v2UserTweetsJS",
-          "authorization": `Bearer ${bearerToken}`
+          "authorization": `Bearer ${ bearerToken }`
       }
   }
 
@@ -71,20 +84,43 @@ const getUserTweets = async (userId) => {
   console.dir(userTweets, {
     depth: null
   });
-  console.log(`Got ${userTweets.length} Tweets from ${userName} (user ID ${userId})!`)
+  console.log(`Got ${ userTweets.length } Tweets from ${ userName } (user ID ${ userId })!`)
 
 }
 
-(async () => {
-try {
-  // Get the users tweets
-  const twitterUserId = await getUserId(bearerToken, 'chingucollabs')
-  console.log('twitterUserId: ', twitterUserId)
-  const response = await getUserTweets(twitterUserId)
-  console.log('tweets: ', response)
-} catch (e) {
-  console.log(e)
-  process.exit(-1)
-}
-process.exit()
-})()
+program 
+  .command('extract')
+  .description('Extract tweets from a specified Twitter account')
+  .option('-d, --debug <debug>', 'Debug switch to add runtime info to console (YES/NO)')
+  .option('-u, --user <screenname>', 'User screen name posting the tweets to be extracted')
+  .option('-o, --output <filepath>', 'Path including fully qualified file name the JSON is to be written to')
+  .action( async (options) => {
+    console.log('options: ', options)
+    environment.setOperationalVars({
+      debug: options.debug,
+      screenName: options.screenname,
+      filepath: options.filepath,
+    })
+
+    isDebug = environment.isDebug()
+
+    isDebug && consoleLogOptions(options)
+    isDebug && console.log('\noperationalVars: ', environment.getOperationalVars())
+    environment.isDebug() && environment.logEnvVars()
+
+    const { SCREEN_NAME, TWITTER_BEARER_TOKEN } = environment.getOperationalVars()
+    console.log('SCREEN_NAME: ', SCREEN_NAME)
+    console.log('TWITTER_BEARER_TOKEN: ', TWITTER_BEARER_TOKEN)
+    
+    try {
+      const twitterUserId = await getUserId(TWITTER_BEARER_TOKEN, 'chingucollabs')
+      const response = await getUserTweets(TWITTER_BEARER_TOKEN, twitterUserId)
+      console.log('tweets: ', response)
+    } catch (err) {
+      console.log(err)
+      process.exit(-1)
+    }
+    process.exit()
+  })
+
+  program.parse(process.argv)
