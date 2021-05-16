@@ -108,12 +108,10 @@ program
     isDebug && console.log('\noperationalVars: ', environment.getOperationalVars())
     environment.isDebug() && environment.logEnvVars()
 
-    const { SCREEN_NAME, TWITTER_BEARER_TOKEN } = environment.getOperationalVars()
-    console.log('SCREEN_NAME: ', SCREEN_NAME)
-    console.log('TWITTER_BEARER_TOKEN: ', TWITTER_BEARER_TOKEN)
+    const { SCREEN_NAME, TWITTER_BEARER_TOKEN, FILE_PATH } = environment.getOperationalVars()
     
     try {
-      const twitterUserId = await getUserId(TWITTER_BEARER_TOKEN, 'chingucollabs')
+      const twitterUserId = await getUserId(TWITTER_BEARER_TOKEN, SCREEN_NAME)
       const response = await getUserTweets(TWITTER_BEARER_TOKEN, twitterUserId)
       console.log('tweets: ', response)
     } catch (err) {
