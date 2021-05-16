@@ -26,16 +26,16 @@ module.exports = async function getUserTweets(bearerToken, userId) {
 
   // we request the author_id expansion so that we can print out the user name later
   let params = {
-      "max_results": 100,
-      'tweet.fields': 'created_at,text,public_metrics,entities',
-      "expansions": "author_id"
+    "max_results": 100,
+    'tweet.fields': 'created_at,text,public_metrics,entities',
+    "expansions": "author_id"
   }
 
   const options = {
-      headers: {
-          "User-Agent": "v2UserTweetsJS",
-          "authorization": `Bearer ${bearerToken}`
-      }
+    headers: {
+      "User-Agent": "v2UserTweetsJS",
+      "authorization": `Bearer ${bearerToken}`
+    }
   }
 
   let hasNextPage = true
