@@ -1,9 +1,9 @@
 const { Command } = require('commander')
 const program = new Command()
 
-const needle = require('needle')
 const Environment = require('./src/Environment')
 const { isDebugOn } = require('./src/Environment')
+const FileOps = require('./src/FileOps')
 const getUserId = require('./src/getUserId')
 const getUserTweets = require('./src/getUserTweets')
 
@@ -45,8 +45,11 @@ program
     
     try {
       const twitterUserId = await getUserId(TWITTER_BEARER_TOKEN, SCREEN_NAME)
-      const response = await getUserTweets(TWITTER_BEARER_TOKEN, twitterUserId)
-      console.log('tweets: ', response)
+      const userTweets = await getUserTweets(TWITTER_BEARER_TOKEN, twitterUserId)
+      console.log('userTweets[0]: ', userTweets[0])
+      const fd = FileOps.openAndClearFile(FILE_PATH)
+      await FileOps.objectToFile(FILE_PATH, JSON.stringify(userTweets))
+      FileOps.closeFile(fd)
     } catch (err) {
       console.log(err)
       process.exit(-1)
