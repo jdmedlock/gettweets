@@ -1,6 +1,6 @@
 const needle = require('needle')
 
-module.exports = async function getUserTweets(bearerToken, userId) {
+module.exports = async function getUserTweets(bearerToken, userId, startDate, endDate) {
 
   async function getPage(url, params, options, nextToken) {
     if (nextToken) {
@@ -28,13 +28,15 @@ module.exports = async function getUserTweets(bearerToken, userId) {
   let params = {
     "max_results": 100,
     'tweet.fields': 'created_at,text,public_metrics,entities',
-    "expansions": "author_id"
+    "expansions": "author_id",
+    "start_time": startDate !== undefined ? startDate.concat('T00:00:01Z') : '',
+    "end_time": endDate !== undefined ? endDate.concat('T23:59:59Z') : '',
   }
 
   const options = {
     headers: {
       "User-Agent": "v2UserTweetsJS",
-      "authorization": `Bearer ${bearerToken}`
+      "authorization": `Bearer ${bearerToken}`,
     }
   }
 

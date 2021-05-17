@@ -13,6 +13,8 @@ class Environment {
     console.log('- SCREEN_NAME: ', process.env.SCREEN_NAME)
     console.log('- TWITTER_BEARER_TOKEN: ', process.env.TWITTER_BEARER_TOKEN)
     console.log('- FILE_PATH: ', process.env.FILE_PATH)
+    console.log('- START_DATE: ', process.env.START_DATE)
+    console.log('- END_DATE: ', process.env.END_DATE)
     return true
   }
 
@@ -42,7 +44,7 @@ class Environment {
 
   setOperationalVars(options) {
     // Retrieve the current variable values from `.env` file
-    let { DEBUG, SCREEN_NAME, TWITTER_BEARER_TOKEN, FILE_PATH } = process.env
+    let { DEBUG, SCREEN_NAME, TWITTER_BEARER_TOKEN, FILE_PATH, START_DATE, END_DATE } = process.env
 
     // Initialize `operationalVars` allowing command line parameter values
     // to override `.env` parameters
@@ -51,6 +53,8 @@ class Environment {
     this.operationalVars.SCREEN_NAME = options.screenName ? options.screenName : SCREEN_NAME
     this.operationalVars.TWITTER_BEARER_TOKEN = TWITTER_BEARER_TOKEN
     this.operationalVars.FILE_PATH = options.filepath ? options.filepath : FILE_PATH
+    this.operationalVars.START_DATE = options.startdate ? options.startdate : START_DATE
+    this.operationalVars.END_DATE = options.enddate ? options.enddate : END_DATE
   }
 }
 
