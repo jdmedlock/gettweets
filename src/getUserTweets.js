@@ -43,7 +43,7 @@ module.exports = async function getUserTweets(bearerToken, userId) {
   let userName;
   console.log("Retrieving Tweets...");
 
-  let pageLimit = 5
+  let pageLimit = 2
   while (hasNextPage) {
     let resp = await getPage(url, params, options, nextToken)
     pageLimit -= 1

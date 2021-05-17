@@ -65,6 +65,19 @@ class FileOps {
 	}
 
 	/**
+	 * Append to a file
+	 * @static
+	 * @param {String} filePath Path to the file
+	 * @param {String} record Record to add
+	 * @returns {Promise} Promise to be resolved when the write completes
+	 * @memberof FileOps
+	 */
+	static writeFileSync(filePath, record) {
+		return fs.writeFileSync(filePath, record, 'utf-8')
+
+	}
+
+	/**
 	 * Write to a file
 	 * @static
 	 * @param {String} filePath Path to the file

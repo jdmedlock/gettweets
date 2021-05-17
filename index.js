@@ -2,8 +2,8 @@ const { Command } = require('commander')
 const program = new Command()
 
 const Environment = require('./src/Environment')
-const { isDebugOn } = require('./src/Environment')
 const FileOps = require('./src/FileOps')
+const { isDebugOn } = require('./src/Environment')
 const getUserId = require('./src/getUserId')
 const getUserTweets = require('./src/getUserTweets')
 
@@ -46,10 +46,14 @@ program
     try {
       const twitterUserId = await getUserId(TWITTER_BEARER_TOKEN, SCREEN_NAME)
       const userTweets = await getUserTweets(TWITTER_BEARER_TOKEN, twitterUserId)
-      console.log('userTweets[0]: ', userTweets[0])
-      const fd = FileOps.openAndClearFile(FILE_PATH)
-      await FileOps.objectToFile(FILE_PATH, JSON.stringify(userTweets))
-      FileOps.closeFile(fd)
+
+      const tweetJSON = '[' + 
+        userTweets.reduce((txt, cur, index, array) => {
+          const trailingComma = index === (array.length - 1) ? '' : ', '
+          return txt + '\n' + JSON.stringify(cur) + trailingComma
+        }, '')
+        + ']'
+      FileOps.writeFileSync(FILE_PATH, tweetJSON, 'utf-8')
     } catch (err) {
       console.log(err)
       process.exit(-1)
