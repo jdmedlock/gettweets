@@ -9,10 +9,9 @@ const getUserTweets = require('./src/getUserTweets')
 
 const environment = new Environment()
 environment.initDotEnv('./')
-let isDebug = false
 
 const consoleLogOptions = (options) => {
-  if (isDebug) {
+  if (environment.isDebug()) {
     console.log('\getTweets command options:')
     console.log('--------------------')
     console.log('- debug: ',options.debug)
@@ -32,20 +31,15 @@ program
   .option('-s, --startdt <startdate>', 'Extract Tweets starting from this date')
   .option('-e, --enddt <enddate>', 'Extract Tweets through this date (inclusive)')
   .action( async (options) => {
-    console.log('options: ', options)
     environment.setOperationalVars({
       debug: options.debug,
-      screenName: options.screenname,
-      filepath: options.filepath,
-      startdate: options.startdate,
-      enddate: options.enddate,
+      user: options.user,
+      output: options.output,
+      startdt: options.startdt,
+      emddt: options.enddt,
     })
 
-    isDebug = environment.isDebug()
-
-    isDebug && consoleLogOptions(options)
-    isDebug && console.log('\noperationalVars: ', environment.getOperationalVars())
-    environment.isDebug() && environment.logEnvVars()
+    environment.isDebug() && console.log('\noperationalVars after setOperationalVars: ', environment.getOperationalVars())
 
     const { SCREEN_NAME, TWITTER_BEARER_TOKEN, FILE_PATH, START_DATE, END_DATE } = environment.getOperationalVars()
     

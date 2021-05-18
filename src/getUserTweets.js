@@ -64,6 +64,6 @@ module.exports = async function getUserTweets(bearerToken, userId, startDate, en
     }
   }
 
-  console.log(`Got ${userTweets.length} Tweets from ${userName} (user ID ${userId})!`)
+  console.log(`Got ${ userTweets.length } Tweets from ${ userName } (user ID ${ userId })!`)
   return userTweets
 }

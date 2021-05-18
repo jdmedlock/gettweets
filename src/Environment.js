@@ -43,6 +43,9 @@ class Environment {
   }
 
   setOperationalVars(options) {
+
+    console.log('setOperationalVars - options: ', options)
+
     // Retrieve the current variable values from `.env` file
     let { DEBUG, SCREEN_NAME, TWITTER_BEARER_TOKEN, FILE_PATH, START_DATE, END_DATE } = process.env
 
@@ -50,11 +53,11 @@ class Environment {
     // to override `.env` parameters
     const debugValue = options.debug ? options.debug : DEBUG
     this.operationalVars.DEBUG = debugValue.toUpperCase() === 'YES' ? true : false
-    this.operationalVars.SCREEN_NAME = options.screenName ? options.screenName : SCREEN_NAME
+    this.operationalVars.SCREEN_NAME = options.user !== undefined ? options.user : SCREEN_NAME
     this.operationalVars.TWITTER_BEARER_TOKEN = TWITTER_BEARER_TOKEN
-    this.operationalVars.FILE_PATH = options.filepath ? options.filepath : FILE_PATH
-    this.operationalVars.START_DATE = options.startdate ? options.startdate : START_DATE
-    this.operationalVars.END_DATE = options.enddate ? options.enddate : END_DATE
+    this.operationalVars.FILE_PATH = options.output !== undefined ? options.output : FILE_PATH
+    this.operationalVars.START_DATE = options.startdt !== undefined ? options.startdt : START_DATE
+    this.operationalVars.END_DATE = options.enddt !== undefined ? options.enddt : END_DATE
   }
 }
 

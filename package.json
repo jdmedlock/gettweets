@@ -2,7 +2,7 @@
   "name": "gettweets",
   "version": "1.0.0",
   "description": "Retrieve Tweets posted by a specified Twitter user",
-  "main": "index.js",
+  "main": "getTweets.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
